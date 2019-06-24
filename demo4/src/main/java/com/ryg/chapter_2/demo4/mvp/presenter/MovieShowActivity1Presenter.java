@@ -8,7 +8,10 @@ import com.jess.arms.di.scope.ActivityScope;
 import com.jess.arms.mvp.BasePresenter;
 import com.jess.arms.http.imageloader.ImageLoader;
 
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.internal.subscribers.SubscriberResourceWrapper;
 import io.reactivex.schedulers.Schedulers;
 import me.jessyan.rxerrorhandler.core.RxErrorHandler;
 import me.jessyan.rxerrorhandler.handler.ErrorHandleSubscriber;
@@ -51,8 +54,8 @@ public class MovieShowActivity1Presenter extends BasePresenter<MovieShowActivity
         super(model, rootView);
     }
 
-    public void getData(){
-        Log.d(TAG, "DangBeiBean  getData  running" );
+    public void getData() {
+        Log.d(TAG, "DangBeiBean  getData  running");
 
         mModel.getMovie(11, true)
                 .subscribeOn(Schedulers.io())
@@ -65,9 +68,9 @@ public class MovieShowActivity1Presenter extends BasePresenter<MovieShowActivity
 
                 })
                 .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
-                .subscribe(new ErrorHandleSubscriber<List<DangBeiBean>>(mErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber<DangBeiBean>(mErrorHandler) {
                     @Override
-                    public void onNext(List<DangBeiBean> users) {
+                    public void onNext(DangBeiBean users) {
                         Log.d(TAG, "DangBeiBean  List<DangBeiBean> users  onNext running"+ users);
                         mRootView.setDataList(users);
                     }
@@ -75,11 +78,10 @@ public class MovieShowActivity1Presenter extends BasePresenter<MovieShowActivity
                     @Override
                     public void onError(Throwable t) {
                         Log.d(TAG, "DangBeiBean  List<DangBeiBean> users  onError running:"+ t);
-
                         super.onError(t);
                     }
-                });
-    }
+    });
+}
 
     @Override
     public void onDestroy() {

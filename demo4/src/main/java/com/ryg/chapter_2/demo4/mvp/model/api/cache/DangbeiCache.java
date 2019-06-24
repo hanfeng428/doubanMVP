@@ -13,6 +13,6 @@ import io.rx_cache2.Reply;
 
 public interface DangbeiCache {
     @LifeCache(duration = 2, timeUnit = TimeUnit.MINUTES)
-    Observable<Reply<List<DangBeiBean>>> getUsers(Observable<List<DangBeiBean>> users, DynamicKey idLastUserQueried, EvictProvider evictProvider);
+    Observable<DangBeiBean> getUsers(Observable<DangBeiBean> users, DynamicKey idLastUserQueried, EvictProvider evictProvider);
 
 }

@@ -111,13 +111,13 @@ public class MovieShowActivity1Activity extends BaseActivity<MovieShowActivity1P
     }
 
     @Override
-    public void setDataList(List<DangBeiBean> dataList) {
+    public void setDataList(DangBeiBean dataList) {
         Log.d(TAG, "DangBeiBean  setDataList  running" );
 
-        for (int i = 0; i < dataList.size(); i++) {
-            for(int j=0;j<dataList.get(i).getRows().size();j++) {
-                Log.d(TAG, "DangBeiBean" + dataList.get(i).getRows().get(j).getTitle());
-            }
+
+            for(int j=0;j<dataList.getRows().size();j++) {
+                Log.d(TAG, "DangBeiBean" + dataList.getRows().get(j).getTitle());
+
 
         }
     }

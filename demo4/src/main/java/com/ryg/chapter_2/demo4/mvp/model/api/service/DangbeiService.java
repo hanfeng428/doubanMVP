@@ -11,5 +11,5 @@ import retrofit2.http.Query;
 
 public interface DangbeiService {
     @GET("http://user.xzhonline.com:8806/api/headline/homepage")
-    Observable<List<DangBeiBean>> getMovie();
+    Observable<DangBeiBean> getMovie();
 }

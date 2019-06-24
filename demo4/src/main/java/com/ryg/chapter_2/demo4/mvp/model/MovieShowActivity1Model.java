@@ -19,6 +19,9 @@ import com.ryg.chapter_2.demo4.mvp.model.entity.DangBeiBean;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Function;
 import io.rx_cache2.DynamicKey;
 import io.rx_cache2.EvictDynamicKey;
 
@@ -56,7 +59,7 @@ public class MovieShowActivity1Model extends BaseModel implements MovieShowActiv
     }
 
     @Override
-    public Observable<List<DangBeiBean>> getMovie(int lastIdQueried, boolean update) {
+    public Observable<DangBeiBean> getMovie(int lastIdQueried, boolean update) {
         Log.d(TAG, "DangBeiBean  setDataList  running" );
 
         Observable observable = mRepositoryManager
@@ -66,5 +69,23 @@ public class MovieShowActivity1Model extends BaseModel implements MovieShowActiv
                 .getUsers(observable
                         , new DynamicKey(lastIdQueried)
                         , new EvictDynamicKey(update));
+
+
+        //使用rxcache缓存,上拉刷新则不读取缓存,加载更多读取缓存
+//        return Observable.just(mRepositoryManager
+//                .obtainRetrofitService(DangbeiService.class)
+//                .getMovie())
+//                .flatMap(new Function<Observable<List<DangBeiBean>>, ObservableSource<List<DangBeiBean>>>() {
+//                    @Override
+//                    public ObservableSource<List<DangBeiBean>> apply(@NonNull Observable<List<DangBeiBean>> listObservable) throws Exception {
+//                        return mRepositoryManager.obtainCacheService(DangbeiCache.class)
+//                                .getUsers(listObservable
+//                                        , new DynamicKey(lastIdQueried)
+//                                        , new EvictDynamicKey(update))
+//                                .map(listReply -> listReply.getData());
+//                    }
+//                });
+
+
     }
 }

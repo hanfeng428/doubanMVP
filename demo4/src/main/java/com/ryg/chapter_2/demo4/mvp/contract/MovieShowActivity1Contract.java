@@ -32,13 +32,13 @@ public interface MovieShowActivity1Contract {
         Activity getActivity();
         //申请权限
         RxPermissions getRxPermissions();
-        void setDataList(List<DangBeiBean> dataList);
+        void setDataList(DangBeiBean dataList);
 
     }
 
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,即是否使用缓存
     interface Model extends IModel {
-        Observable<List<DangBeiBean>> getMovie(int lastIdQueried, boolean update);
+        Observable<DangBeiBean> getMovie(int lastIdQueried, boolean update);
 
     }
 }
