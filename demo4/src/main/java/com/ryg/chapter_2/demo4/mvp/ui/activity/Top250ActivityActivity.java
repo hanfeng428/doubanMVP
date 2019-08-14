@@ -1,0 +1,220 @@
+package com.ryg.chapter_2.demo4.mvp.ui.activity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+
+import com.jess.arms.base.BaseActivity;
+import com.jess.arms.di.component.AppComponent;
+import com.jess.arms.utils.ArmsUtils;
+
+import com.ryg.chapter_2.demo4.di.component.DaggerTop250ActivityComponent;
+import com.ryg.chapter_2.demo4.mvp.contract.Top250ActivityContract;
+import com.ryg.chapter_2.demo4.mvp.model.entity.Top250Bean;
+import com.ryg.chapter_2.demo4.mvp.presenter.Top250ActivityPresenter;
+
+import com.ryg.chapter_2.demo4.R;
+import com.ryg.chapter_2.demo4.mvp.ui.adapter.Top250FilmAdapter;
+import com.tbruyelle.rxpermissions2.RxPermissions;
+
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_IDLE;
+import static com.jess.arms.utils.Preconditions.checkNotNull;
+
+
+/**
+ * ================================================
+ * Description:
+ * <p>
+ * Created by MVPArmsTemplate on 08/12/2019 10:15
+ * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
+ * <a href="https://github.com/JessYanCoding">Follow me</a>
+ * <a href="https://github.com/JessYanCoding/MVPArms">Star me</a>
+ * <a href="https://github.com/JessYanCoding/MVPArms/wiki">See me</a>
+ * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
+ * ================================================
+ */
+public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter> implements Top250ActivityContract.View {
+    @BindView(R.id.movie_top250_recyclerview)
+    RecyclerView recyclerview;
+    @BindView(R.id.id_swiperefreshlayout)
+    SwipeRefreshLayout idSwiperefreshlayout;
+    Top250FilmAdapter adapter;
+    private LinearLayoutManager mLayoutManager;
+    private RecyclerView.OnScrollListener listener;
+    private int lastVisibleItem;
+    private Top250Bean totalBean;
+    private boolean notshake;  //防止recyclerview短时间多次刷新，造成数据重复加载。
+
+    @Override
+    public void setupActivityComponent(@NonNull AppComponent appComponent) {
+        DaggerTop250ActivityComponent //如找不到该类,请编译一下项目
+                .builder()
+                .appComponent(appComponent)
+                .view(this)
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    public int initView(@Nullable Bundle savedInstanceState) {
+        return R.layout.activity_top250; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
+    }
+
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        ButterKnife.bind(this);
+        idSwiperefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.getData("0", false);
+                idSwiperefreshlayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (idSwiperefreshlayout != null) {
+                            idSwiperefreshlayout.setRefreshing(false);
+                        }
+                    }
+                }, 2000);
+            }
+        });
+        Log.d(TAG, "hf_Top250ActivityActivity_setDataList  recyclerview  is:" + recyclerview);
+        mLayoutManager = new LinearLayoutManager(this);
+        recyclerview.setLayoutManager(mLayoutManager);
+        notshake=true;
+        scrollRecycleView();
+        mPresenter.getData("0", false);
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void showMessage(@NonNull String message) {
+        checkNotNull(message);
+        ArmsUtils.snackbarText(message);
+    }
+
+    @Override
+    public void launchActivity(@NonNull Intent intent) {
+        checkNotNull(intent);
+        ArmsUtils.startActivity(intent);
+    }
+
+    @Override
+    public void killMyself() {
+        finish();
+    }
+
+    @Override
+    public void setDataList(Top250Bean dataList, boolean ismore) {
+        if (ismore) {
+            totalBean.getSubjects().addAll(dataList.getSubjects());
+            adapter.notifyDataSetChanged();
+
+        }else {
+            totalBean=dataList;
+            adapter = new Top250FilmAdapter(this, totalBean);
+            Log.d(TAG, "hf_Top250ActivityActivity_setDataList  recyclerview1  is:" + recyclerview);
+            recyclerview.setAdapter(adapter);
+        }
+        adapter.notifyDataSetChanged();
+
+
+    }
+
+    public void scrollRecycleView() {
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+                    Log.d(TAG, "hf_Top250ActivityActivity_scrollRecycleView  mLayoutManager.getItemCount()  is:" + mLayoutManager.getItemCount());
+
+                    Log.d(TAG, "hf_Top250ActivityActivity_scrollRecycleView  lastVisibleItem  is:" + lastVisibleItem);
+                    if (lastVisibleItem >= 249) {
+                        if (adapter != null) {
+                            adapter.updateLoadStatus(adapter.LOAD_NONE);
+                        }
+                        return;
+                    }
+                    if (notshake) {
+                        notshake=false;
+                        if (lastVisibleItem + 1 == mLayoutManager.getItemCount()) {
+                            if (adapter != null) {
+                                adapter.updateLoadStatus(adapter.LOAD_PULL_TO);
+                                // isLoadMore = true;
+                                adapter.updateLoadStatus(adapter.LOAD_MORE);
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    notshake=true;
+                                    mPresenter.getData(lastVisibleItem + "", true);
+
+                                }
+                            }, 1000);
+                        }
+
+                    }
+                }
+//                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+//
+//
+//                }
+//                if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
+//
+//                }
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+
+    }
+
+    @Override
+    public void startLoadMore() {
+
+    }
+
+    @Override
+    public void endLoadMore() {
+
+    }
+
+    @Override
+    public Activity getActivity() {
+        return null;
+    }
+
+    @Override
+    public RxPermissions getRxPermissions() {
+        return null;
+    }
+}

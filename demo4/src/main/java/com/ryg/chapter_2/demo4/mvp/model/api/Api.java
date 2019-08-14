@@ -10,5 +10,5 @@ package com.ryg.chapter_2.demo4.mvp.model.api;
  * ================================================
  */
 public interface Api {
-    String APP_DOMAIN = "http://user.xzhonline.com:8806/";
+    String APP_DOMAIN = "https://douban.uieee.com/";
 }
