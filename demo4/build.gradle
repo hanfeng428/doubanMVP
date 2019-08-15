@@ -48,6 +48,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'me.jessyan:arms:2.5.0'
     implementation 'me.jessyan:arms-imageloader-glide:2.5.0'
+    implementation 'com.android.support:design:28.0.0'
 
     //view
     implementation rootProject.ext.dependencies["autosize"]

@@ -1,7 +1,5 @@
-package com.ryg.chapter_2.demo4.mvp.ui.activity;
+package com.ryg.chapter_2.demo4.mvp.ui.fragment;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -10,41 +8,22 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
-import com.jess.arms.utils.ArmsUtils;
-
-import com.ryg.chapter_2.demo4.di.component.DaggerTop250ActivityComponent;
+import com.ryg.chapter_2.demo4.R;
 import com.ryg.chapter_2.demo4.mvp.contract.Top250ActivityContract;
 import com.ryg.chapter_2.demo4.mvp.model.entity.Top250Bean;
 import com.ryg.chapter_2.demo4.mvp.presenter.Top250ActivityPresenter;
-
-import com.ryg.chapter_2.demo4.R;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.Top250FilmAdapter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_IDLE;
-import static com.jess.arms.utils.Preconditions.checkNotNull;
-
-
-/**
- * ================================================
- * Description:
- * <p>
- * Created by MVPArmsTemplate on 08/12/2019 10:15
- * <a href="mailto:jess.yan.effort@gmail.com">Contact me</a>
- * <a href="https://github.com/JessYanCoding">Follow me</a>
- * <a href="https://github.com/JessYanCoding/MVPArms">Star me</a>
- * <a href="https://github.com/JessYanCoding/MVPArms/wiki">See me</a>
- * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
- * ================================================
- */
-public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter> implements Top250ActivityContract.View {
+public class FilmTop250Fragment extends LazyFragment<Top250ActivityPresenter> implements Top250ActivityContract.View {
     @BindView(R.id.movie_top250_recyclerview)
     RecyclerView recyclerview;
     @BindView(R.id.id_swiperefreshlayout)
@@ -56,25 +35,27 @@ public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter
     private Top250Bean totalBean;
     private boolean notshake;  //防止recyclerview短时间多次刷新，造成数据重复加载。
 
-    @Override
-    public void setupActivityComponent(@NonNull AppComponent appComponent) {
-        DaggerTop250ActivityComponent //如找不到该类,请编译一下项目
-                .builder()
-                .appComponent(appComponent)
-                .view(this)
-                .build()
-                .inject(this);
-    }
 
-    @Override
-    public int initView(@Nullable Bundle savedInstanceState) {
-        return R.layout.activity_top250; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
+
+
+    public static FilmTop250Fragment newInstance() {
+        Bundle args = new Bundle();
+        FilmTop250Fragment fragment = new FilmTop250Fragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
     @Override
-    public void initData(@Nullable Bundle savedInstanceState) {
-//        ButterKnife.bind(this);          //mvpAmrs框架已自动实现
+    protected void lazyLoad() {
+        Log.e("zrg", "hf_FilmTop250Fragment_lazyLoad:mHasLoadedOnce:" + mHasLoadedOnce);
+
+        if (!isInitView || !mIsVisible || mHasLoadedOnce) {
+            return;
+        }
+        mHasLoadedOnce = true;
+        //TODO UI和业务逻辑
+
         idSwiperefreshlayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -90,39 +71,55 @@ public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter
             }
         });
         Log.d(TAG, "hf_Top250ActivityActivity_setDataList  recyclerview  is:" + recyclerview);
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerview.setLayoutManager(mLayoutManager);
         notshake=true;
         scrollRecycleView();
         mPresenter.getData("0", false);
+    }
+
+    @Override
+    public void setupFragmentComponent(@NonNull AppComponent appComponent) {
+//        DaggerMovieComponent //如找不到该类,请编译一下项目
+//                .builder()
+//                .appComponent(appComponent)
+//                .view(this)
+//                .build()
+//                .inject(this);
+    }
+
+    @Override
+    public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_top250, container, false);
+        ButterKnife.bind(this, view);
+        isInitView = true;
+        return view;
+    }
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+        lazyLoad();
+    }
+
+    @Override
+    public void setData(@Nullable Object data) {
+
+    }
+
+
+    @Override
+    public void startLoadMore() {
 
     }
 
     @Override
-    public void showLoading() {
+    public void endLoadMore() {
 
     }
 
     @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showMessage(@NonNull String message) {
-        checkNotNull(message);
-        ArmsUtils.snackbarText(message);
-    }
-
-    @Override
-    public void launchActivity(@NonNull Intent intent) {
-        checkNotNull(intent);
-        ArmsUtils.startActivity(intent);
-    }
-
-    @Override
-    public void killMyself() {
-        finish();
+    public RxPermissions getRxPermissions() {
+        return null;
     }
 
     @Override
@@ -133,7 +130,7 @@ public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter
 
         }else {
             totalBean=dataList;
-            adapter = new Top250FilmAdapter(this, totalBean);
+            adapter = new Top250FilmAdapter(getActivity(), totalBean);
             Log.d(TAG, "hf_Top250ActivityActivity_setDataList  recyclerview1  is:" + recyclerview);
             recyclerview.setAdapter(adapter);
         }
@@ -142,6 +139,9 @@ public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter
 
     }
 
+    @Override
+    public void showMessage(@NonNull String message) {
+    }
     public void scrollRecycleView() {
         recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -196,25 +196,5 @@ public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter
         });
 
 
-    }
-
-    @Override
-    public void startLoadMore() {
-
-    }
-
-    @Override
-    public void endLoadMore() {
-
-    }
-
-    @Override
-    public Activity getActivity() {
-        return null;
-    }
-
-    @Override
-    public RxPermissions getRxPermissions() {
-        return null;
     }
 }
