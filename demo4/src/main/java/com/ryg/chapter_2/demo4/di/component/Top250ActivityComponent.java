@@ -10,6 +10,7 @@ import com.ryg.chapter_2.demo4.mvp.contract.Top250ActivityContract;
 
 import com.jess.arms.di.scope.ActivityScope;
 import com.ryg.chapter_2.demo4.mvp.ui.activity.Top250ActivityActivity;
+import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmTop250Fragment;
 
 
 /**
@@ -28,6 +29,7 @@ import com.ryg.chapter_2.demo4.mvp.ui.activity.Top250ActivityActivity;
 @Component(modules = Top250ActivityModule.class, dependencies = AppComponent.class)
 public interface Top250ActivityComponent {
     void inject(Top250ActivityActivity activity);
+    void inject(FilmTop250Fragment fragment);
 
     @Component.Builder
     interface Builder {

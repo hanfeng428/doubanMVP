@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.jess.arms.di.component.AppComponent;
 import com.ryg.chapter_2.demo4.R;
+import com.ryg.chapter_2.demo4.di.component.DaggerTop250ActivityComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.Top250ActivityContract;
 import com.ryg.chapter_2.demo4.mvp.model.entity.Top250Bean;
 import com.ryg.chapter_2.demo4.mvp.presenter.Top250ActivityPresenter;
@@ -80,12 +81,12 @@ public class FilmTop250Fragment extends LazyFragment<Top250ActivityPresenter> im
 
     @Override
     public void setupFragmentComponent(@NonNull AppComponent appComponent) {
-//        DaggerMovieComponent //如找不到该类,请编译一下项目
-//                .builder()
-//                .appComponent(appComponent)
-//                .view(this)
-//                .build()
-//                .inject(this);
+        DaggerTop250ActivityComponent //如找不到该类,请编译一下项目
+                .builder()
+                .appComponent(appComponent)
+                .view(this)
+                .build()
+                .inject(this);
     }
 
     @Override

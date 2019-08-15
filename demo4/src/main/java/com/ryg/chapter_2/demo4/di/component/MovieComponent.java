@@ -31,7 +31,6 @@ import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmTop250Fragment;
 public interface MovieComponent {
     void inject(MovieActivity activity);
     void inject(FilmLiveFragment fragment);
-//    void inject(FilmTop250Fragment fragment);
 
     @Component.Builder
     interface Builder {

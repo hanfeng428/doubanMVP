@@ -44,6 +44,10 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
  * ================================================
  */
+
+/**
+ * by hefeng   2019/8/15   此activity没有任何作用，功能已经移植到fragment
+ */
 public class Top250ActivityActivity extends BaseActivity<Top250ActivityPresenter> implements Top250ActivityContract.View {
     @BindView(R.id.movie_top250_recyclerview)
     RecyclerView recyclerview;
