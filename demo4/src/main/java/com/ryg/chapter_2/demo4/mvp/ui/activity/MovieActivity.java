@@ -2,6 +2,8 @@ package com.ryg.chapter_2.demo4.mvp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -9,6 +11,7 @@ import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 
+import com.ryg.chapter_2.demo4.app.utils.GetVPImage;
 import com.ryg.chapter_2.demo4.app.utils.ThemeUtils;
 import com.ryg.chapter_2.demo4.di.component.DaggerMovieComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieContract;
@@ -20,10 +23,15 @@ import com.ryg.chapter_2.demo4.mvp.ui.adapter.MyViewpagerAdapter;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.ComingSoonFragment;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmLiveFragment;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmTop250Fragment;
+import com.ryg.chapter_2.demo4.mvp.ui.other.GlideImageLoader;
+import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +53,18 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
  * ================================================
  */
-public class MovieActivity extends BaseActivity<MoviePresenter> implements MovieContract.View ,ViewPager.OnPageChangeListener{
+public class MovieActivity extends BaseActivity<MoviePresenter> implements MovieContract.View, ViewPager.OnPageChangeListener {
     @BindView(R.id.tab_layout)
     TabLayout tablayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
-
+    @BindView(R.id.banner)
+    Banner banner;
     List<Fragment> fragmentList;
     String[] titles;
     private MyViewpagerAdapter mViewPagerAdapter;
+    List<String> mList=new ArrayList<>();
+    static final int BANER = 11;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -70,8 +81,39 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
         return R.layout.activity_movie; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
     }
 
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            for (int i = 0; i < mList.size(); i++) {
+                Log.d("baner", "hefeng_TopViewPagerAdapter_imagelist:" + mList.get(i));
+            }
+            if (msg.what ==BANER){
+                banner.setImages(mList);
+                banner.setImageLoader(new GlideImageLoader());
+                banner.setOnBannerListener(new OnBannerListener() {
+                    @Override
+                    public void OnBannerClick(int position) {
+                        Log.d("baner", "hefeng_TopViewPagerAdapter_OnBannerClick:" + position);
+
+                    }
+                });
+                banner.start();
+            }
+        }
+    };
+
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GetVPImage getVPImage = new GetVPImage();
+                mList = getVPImage.getImage();
+                if(mList.size()>0){
+                    handler.sendEmptyMessage(BANER);
+                }
+            }
+        }).start();
 
         titles = getResources().getStringArray(R.array.tab_film);
         fragmentList = new ArrayList<Fragment>();
@@ -91,6 +133,7 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
 //        tablayout.setTabTextColors(getResources().getColor(R.color.text_gray_6),ThemeUtils.getThemeColor());
         // 将TabLayout和ViewPager进行关联，让两者联动起来
         tablayout.setupWithViewPager(viewPager);
+
 
     }
 
