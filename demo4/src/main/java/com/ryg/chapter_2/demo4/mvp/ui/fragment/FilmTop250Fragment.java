@@ -166,17 +166,23 @@ public class FilmTop250Fragment extends LazyFragment<Top250ActivityPresenter> im
                             if (adapter != null) {
                                 adapter.updateLoadStatus(adapter.LOAD_PULL_TO);
                                 // isLoadMore = true;
-                                adapter.updateLoadStatus(adapter.LOAD_MORE);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        adapter.updateLoadStatus(adapter.LOAD_MORE);
+                                    }
+                                }, 200);
                             }
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    notshake=true;
-                                    mPresenter.getData(lastVisibleItem + "", true);
 
-                                }
-                            }, 1000);
                         }
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                notshake=true;
+                                mPresenter.getData(lastVisibleItem + "", true);
+
+                            }
+                        }, 1000);
 
                     }
                 }

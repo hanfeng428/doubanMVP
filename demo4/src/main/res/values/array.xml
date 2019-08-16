@@ -2,6 +2,7 @@
 <resources>
     <string-array name="tab_film">
         <item>热映榜</item>
+        <item>即将上映</item>
         <item>Top250</item>
     </string-array>
 </resources>

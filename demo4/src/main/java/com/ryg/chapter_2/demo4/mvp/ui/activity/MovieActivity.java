@@ -75,6 +75,7 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
 
         titles = getResources().getStringArray(R.array.tab_film);
         fragmentList = new ArrayList<Fragment>();
+        fragmentList.add(FilmLiveFragment.newInstance());
         fragmentList.add(ComingSoonFragment.newInstance());
         fragmentList.add(FilmTop250Fragment.newInstance());
         mViewPagerAdapter = new MyViewpagerAdapter(getSupportFragmentManager(), titles, fragmentList);
