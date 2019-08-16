@@ -24,7 +24,6 @@ public class FilmLiveAdapter extends EasyRecyclerViewAdapter<FilmLiveBean.Subjec
     Context context;
     public FilmLiveAdapter(Context context){
         this.context=context;
-
     }
     @Override
     public RecyclerView.ViewHolder onCreate(ViewGroup parent, int viewType) {

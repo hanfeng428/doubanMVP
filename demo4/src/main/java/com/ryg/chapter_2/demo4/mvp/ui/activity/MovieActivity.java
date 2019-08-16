@@ -17,6 +17,7 @@ import com.ryg.chapter_2.demo4.mvp.presenter.MoviePresenter;
 
 import com.ryg.chapter_2.demo4.R;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.MyViewpagerAdapter;
+import com.ryg.chapter_2.demo4.mvp.ui.fragment.ComingSoonFragment;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmLiveFragment;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmTop250Fragment;
 
@@ -74,7 +75,7 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
 
         titles = getResources().getStringArray(R.array.tab_film);
         fragmentList = new ArrayList<Fragment>();
-        fragmentList.add(FilmLiveFragment.newInstance());
+        fragmentList.add(ComingSoonFragment.newInstance());
         fragmentList.add(FilmTop250Fragment.newInstance());
         mViewPagerAdapter = new MyViewpagerAdapter(getSupportFragmentManager(), titles, fragmentList);
         viewPager.setAdapter(mViewPagerAdapter);
