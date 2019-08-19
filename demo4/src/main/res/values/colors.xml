@@ -58,5 +58,6 @@
     <color name="black_90">#dd000000</color>
 
     <color name="trangery">#512e2e2e</color>
+    <color name="toolbarColor">#ffffff</color>
 
 </resources>

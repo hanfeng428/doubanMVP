@@ -13,6 +13,7 @@ import com.jess.arms.utils.ArmsUtils;
 
 import com.ryg.chapter_2.demo4.app.utils.GetVPImage;
 import com.ryg.chapter_2.demo4.app.utils.ThemeUtils;
+import com.ryg.chapter_2.demo4.app.utils.UIUtils;
 import com.ryg.chapter_2.demo4.di.component.DaggerMovieComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieContract;
 import com.ryg.chapter_2.demo4.mvp.model.entity.FilmLiveBean;
@@ -27,10 +28,19 @@ import com.ryg.chapter_2.demo4.mvp.ui.other.GlideImageLoader;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -53,7 +63,7 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
  * ================================================
  */
-public class MovieActivity extends BaseActivity<MoviePresenter> implements MovieContract.View, ViewPager.OnPageChangeListener {
+public class MovieActivity extends BaseActivity<MoviePresenter> implements MovieContract.View, ViewPager.OnPageChangeListener, Toolbar.OnMenuItemClickListener {
     @BindView(R.id.tab_layout)
     TabLayout tablayout;
     @BindView(R.id.view_pager)
@@ -63,8 +73,19 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
     List<Fragment> fragmentList;
     String[] titles;
     private MyViewpagerAdapter mViewPagerAdapter;
-    List<String> mList=new ArrayList<>();
+    List<String> mList = new ArrayList<>();
     static final int BANER = 11;
+    @BindView(R.id.main_toolbar)
+    Toolbar main_toolbar;
+    @BindView(R.id.main_drawer_layout)
+    DrawerLayout maindrawerlayout;
+    @BindView(R.id.main_nav)
+    NavigationView mainnav;
+    @BindView(R.id.main_container)
+    RelativeLayout main_container;
+    private View headerView;
+    private ImageView nav_header_img;
+    private TextView nav_header_title;
 
     @Override
     public void setupActivityComponent(@NonNull AppComponent appComponent) {
@@ -87,7 +108,7 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
             for (int i = 0; i < mList.size(); i++) {
                 Log.d("baner", "hefeng_TopViewPagerAdapter_imagelist:" + mList.get(i));
             }
-            if (msg.what ==BANER){
+            if (msg.what == BANER) {
                 banner.setImages(mList);
                 banner.setImageLoader(new GlideImageLoader());
                 banner.setOnBannerListener(new OnBannerListener() {
@@ -109,7 +130,7 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
             public void run() {
                 GetVPImage getVPImage = new GetVPImage();
                 mList = getVPImage.getImage();
-                if(mList.size()>0){
+                if (mList.size() > 0) {
                     handler.sendEmptyMessage(BANER);
                 }
             }
@@ -134,7 +155,48 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
         // 将TabLayout和ViewPager进行关联，让两者联动起来
         tablayout.setupWithViewPager(viewPager);
 
+        /**
+         * 实现抽屉效果
+         */
+        main_toolbar.inflateMenu(R.menu.menu_toolbar);
+        main_toolbar.setOnMenuItemClickListener(this);
+        main_toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                maindrawerlayout.openDrawer(GravityCompat.START);
+            }
+        });
+        headerView = mainnav.getHeaderView(0);
+        nav_header_img = (ImageView) headerView.findViewById(R.id.nav_header_img);
+        nav_header_title = (TextView) headerView.findViewById(R.id.nav_header_title);
+        initToolbar();
+        setupDrawerContent();
+    }
 
+    private void initToolbar() {
+        if (main_toolbar.getTitle() == null) {
+            main_toolbar.setTitle(UIUtils.getString(this, R.string.nav_menu_movie));
+            mainnav.getMenu().getItem(0).setChecked(true);
+        }
+    }
+
+    /**
+     * nav menu点击事件
+     */
+    private void setupDrawerContent() {
+        mainnav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                menuItem.setChecked(true);
+                maindrawerlayout.closeDrawers();
+                String title = (String) menuItem.getTitle();
+                main_toolbar.setTitle(title);
+                //根据menu的Title开启Fragment
+
+                Log.d(TAG, "hf_MovieActivity_setupDrawerContent  title:" + title);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -182,5 +244,16 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
     @Override
     public void setDataList(FilmLiveBean dataList) {
 
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.toolbar_menu_search:
+                Log.d(TAG, "hf_MovieActivity_onMenuItemClick  search:");
+
+                break;
+        }
+        return false;
     }
 }
