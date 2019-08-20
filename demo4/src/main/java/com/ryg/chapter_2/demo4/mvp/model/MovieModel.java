@@ -50,7 +50,6 @@ public class MovieModel extends BaseModel implements MovieContract.Model {
     @Inject
     Application mApplication;
     List<String> mList = new ArrayList<>();
-    static int number = -1;
     long startTime;
 
     @Inject
@@ -77,37 +76,29 @@ public class MovieModel extends BaseModel implements MovieContract.Model {
                         , new EvictDynamicKey(update));
     }
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == 10) {
-                number = 0;
-            }
-        }
-    };
 
-    Thread thread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            startTime = System.currentTimeMillis();
-            GetVPImage getVPImage = new GetVPImage();
-            mList = getVPImage.getImage();
-            handler.sendEmptyMessage(10);
-        }
-    });
 
     @Override
     public List<String> getBaner() {
         Log.d(TAG, "hf_MovieModel_getBaner  is  running:" + mList.size());
-        thread.start();
+        startTime = System.currentTimeMillis();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                GetVPImage getVPImage = new GetVPImage();
+                mList = getVPImage.getImage();
+
+            }
+        }).start();
         long stopTime = System.currentTimeMillis();
-        Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime:" + startTime+"  stopTime:"+stopTime);
-        while (number == -1 && (stopTime - startTime) < 5000) {
+        Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime1:" + startTime+"  stopTime:"+stopTime);
+
+        while (mList.size()==0 && (stopTime - startTime) < 5000) {
+            Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime:" + startTime+"  stopTime:"+stopTime);
             stopTime = System.currentTimeMillis();
             continue;
         }
         Log.d(TAG, "hf_MovieModel_getBaner  is  running mList:" + mList);
-
         return mList;
     }
 }
