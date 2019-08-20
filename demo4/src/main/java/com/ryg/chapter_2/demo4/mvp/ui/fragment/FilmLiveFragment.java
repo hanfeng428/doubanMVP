@@ -27,6 +27,8 @@ import com.ryg.chapter_2.demo4.mvp.ui.adapter.EasyRecyclerViewAdapter;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.FilmLiveAdapter;
 import com.ryg.chapter_2.demo4.mvp.widget.SpacesItemDecoration;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -123,6 +125,11 @@ public class FilmLiveFragment extends LazyFragment<MoviePresenter> implements Mo
                 Toast.makeText(getActivity(),"item is clicked",Toast.LENGTH_SHORT);
             }
         });
+
+    }
+
+    @Override
+    public void setBanerList(List<String> list) {
 
     }
 

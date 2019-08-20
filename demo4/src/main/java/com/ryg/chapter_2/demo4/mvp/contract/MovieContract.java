@@ -4,6 +4,8 @@ import com.jess.arms.mvp.IView;
 import com.jess.arms.mvp.IModel;
 import com.ryg.chapter_2.demo4.mvp.model.entity.FilmLiveBean;
 
+import java.util.List;
+
 import io.reactivex.Observable;
 
 
@@ -24,12 +26,13 @@ public interface MovieContract {
     interface View extends IView {
 
         void setDataList(FilmLiveBean dataList);
+        void setBanerList(List<String> list);
 
     }
 
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,即是否使用缓存
     interface Model extends IModel {
         Observable<FilmLiveBean> getMovie(int lastIdQueried, boolean update, String count);
-
+        List<String> getBaner();
     }
 }

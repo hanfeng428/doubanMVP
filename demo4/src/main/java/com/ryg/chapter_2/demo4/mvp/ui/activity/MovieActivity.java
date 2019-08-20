@@ -102,40 +102,30 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
         return R.layout.activity_movie; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
     }
 
-    Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            for (int i = 0; i < mList.size(); i++) {
-                Log.d("baner", "hefeng_TopViewPagerAdapter_imagelist:" + mList.get(i));
-            }
-            if (msg.what == BANER) {
-                banner.setImages(mList);
-                banner.setImageLoader(new GlideImageLoader());
-                banner.setOnBannerListener(new OnBannerListener() {
-                    @Override
-                    public void OnBannerClick(int position) {
-                        Log.d("baner", "hefeng_TopViewPagerAdapter_OnBannerClick:" + position);
-
-                    }
-                });
-                banner.start();
-            }
-        }
-    };
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            for (int i = 0; i < mList.size(); i++) {
+//                Log.d("baner", "hefeng_TopViewPagerAdapter_imagelist:" + mList.get(i));
+//            }
+//            if (msg.what == BANER) {
+//                banner.setImages(mList);
+//                banner.setImageLoader(new GlideImageLoader());
+//                banner.setOnBannerListener(new OnBannerListener() {
+//                    @Override
+//                    public void OnBannerClick(int position) {
+//                        Log.d("baner", "hefeng_TopViewPagerAdapter_OnBannerClick:" + position);
+//
+//                    }
+//                });
+//                banner.start();
+//            }
+//        }
+//    };
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                GetVPImage getVPImage = new GetVPImage();
-                mList = getVPImage.getImage();
-                if (mList.size() > 0) {
-                    handler.sendEmptyMessage(BANER);
-                }
-            }
-        }).start();
-
+        mPresenter.getBaner();
         titles = getResources().getStringArray(R.array.tab_film);
         fragmentList = new ArrayList<Fragment>();
         fragmentList.add(FilmLiveFragment.newInstance());
@@ -243,6 +233,15 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
 
     @Override
     public void setDataList(FilmLiveBean dataList) {
+
+    }
+
+    @Override
+    public void setBanerList(List<String> list) {
+        Log.d(TAG, "hf_MovieActivity_setBanerList  list:" + list);
+        for (String s : list) {
+            Log.d(TAG, "hf_MovieActivity_setBanerList  s:" + s);
+        }
 
     }
 

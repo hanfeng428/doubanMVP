@@ -77,6 +77,13 @@ public class MoviePresenter extends BasePresenter<MovieContract.Model, MovieCont
                         }
                     });
     }
+public  void  getBaner(){
+    Log.d(TAG, "hf_MoviePresenter_getBaner  is  running:");
+    if(mModel.getBaner()!=null){
+        mRootView.setBanerList(mModel.getBaner());
+    }
+
+}
 
     @Override
     public void onDestroy() {
