@@ -81,6 +81,8 @@ public  void  getBaner(){
     Log.d(TAG, "hf_MoviePresenter_getBaner  is  running:");
     if(mModel.getBaner()!=null){
         mRootView.setBanerList(mModel.getBaner());
+    }else {
+        Log.d(TAG, "hf_MoviePresenter_getBaner  get_data is error:");
     }
 
 }
