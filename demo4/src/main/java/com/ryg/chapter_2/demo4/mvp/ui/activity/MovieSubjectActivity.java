@@ -2,10 +2,12 @@ package com.ryg.chapter_2.demo4.mvp.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,10 +19,18 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 
+import com.ryg.chapter_2.demo4.app.utils.SnackBarUtils;
 import com.ryg.chapter_2.demo4.app.utils.StringUtils;
 import com.ryg.chapter_2.demo4.app.utils.UIUtils;
 import com.ryg.chapter_2.demo4.di.component.DaggerMovieSubjectComponent;
@@ -31,6 +41,7 @@ import com.ryg.chapter_2.demo4.mvp.presenter.MovieSubjectPresenter;
 import com.ryg.chapter_2.demo4.R;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.ActorAdapter;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.BaseRecyclerAdapter;
+import com.ryg.chapter_2.demo4.mvp.ui.adapter.LikeMovieAdapter;
 
 
 import java.util.List;
@@ -58,7 +69,9 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     private static final String KEY_IMAGE_URL = "image_url";
     String movieID;
     String imageURL;
-
+    private List<String> movieTitle;
+    private List<String> movieId;
+    private List<String> movieimg;
 
     @BindView(R.id.activity_md_iv)
     android.widget.ImageView activitymdiv;
@@ -112,6 +125,7 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     View activity_md_include;
     private MovieDetailsBean mSubject;
     private ActorAdapter mAdapter;
+    private LikeMovieAdapter mLikeAdapter;
 
 
     public static void toActivity(Activity activity, String id, String imageUrl) {
@@ -147,6 +161,7 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
             movieID = getIntent().getStringExtra(KEY_MOVIE_ID);
             imageURL = getIntent().getStringExtra(KEY_IMAGE_URL);
         }
+        imageURL="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2549234765.webp";
         mPresenter.getData("25924056");
         mPresenter.getLikeMovieID();
         mPresenter.getLikeMovieTitle();
@@ -157,8 +172,44 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
         activitymdtoolbar.inflateMenu(R.menu.menu_moviedetails_toolbar);
         //初始化Menu
         Menu menu = activitymdtoolbar.getMenu();
+        updateMovieImg();
         menu.getItem(0).setIcon(R.drawable.collection_true);
     }
+
+    private void updateMovieImg() {
+        Glide.with(this)
+                .asBitmap()
+                .load(imageURL)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        int color = getColor(resource);
+                        activitymdcolltl.setContentScrimColor(color);
+                        activitymdcolltl.setBackgroundColor(color);
+                        activitymdiv.setImageBitmap(resource);
+                    }
+                });
+    }
+
+    private int getColor(Bitmap bitmap) {
+        if (bitmap != null) {
+            Palette p = Palette.from(bitmap).generate();
+            Palette.Swatch s_dm = p.getDarkMutedSwatch();
+            Palette.Swatch s_dv = p.getDarkVibrantSwatch();
+            if (s_dm != null) {
+                return s_dm.getRgb();
+            } else {
+                if (s_dv != null) {
+                    return s_dv.getRgb();
+                } else {
+                    return UIUtils.getColor(getApplicationContext(), R.color.colorPrimary);
+                }
+            }
+        } else {
+            return UIUtils.getColor(getApplicationContext(), R.color.colorPrimary);
+        }
+    }
+
 
     @Override
     public void showLoading() {
@@ -190,32 +241,65 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     @Override
     public void setDataList(MovieDetailsBean dataList) {
         Log.d(TAG, "hf_MovieSubjectActivity_setDataList  dataList.getTitle() is  :" + dataList.getTitle());
-        mSubject=dataList;
+        mSubject = dataList;
+        likeMovie();
+        updateView();
     }
 
     @Override
     public void setLikeMoiveId(List<String> list) {
-        for(String ss:list){
-            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveId  ss is  :" +ss);
-
+        for (String ss : list) {
+            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveId  ss is  :" + ss);
         }
+        movieId = list;
+        likeMovie();
     }
 
     @Override
     public void setLikeMoiveTitle(List<String> list) {
-        for(String ss:list){
-            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveTitle  ss is  :" +ss);
-
+        for (String ss : list) {
+            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveTitle  ss is  :" + ss);
         }
+        movieTitle = list;
+        likeMovie();
     }
 
     @Override
     public void setLikeMoiveImg(List<String> list) {
-        for(String ss:list){
-            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveImg  ss is  :" +ss);
+        for (String ss : list) {
+            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveImg  ss is  :" + ss);
+        }
+        movieimg = list;
+    }
 
+    /**
+     * 加载同类喜欢列表
+     */
+    private void likeMovie() {
+        if (movieId != null && movieTitle != null && movieimg != null) {
+            activity_md_recommend_movie.setText(UIUtils.getString(MovieSubjectActivity.this, R.string.md_load_likemovie));
+            activity_md_rv_movie.setVisibility(View.VISIBLE);
+            activity_md_rv_movie.setLayoutManager(new LinearLayoutManager(MovieSubjectActivity.this,
+                    LinearLayoutManager.HORIZONTAL, false));
+            mLikeAdapter = new LikeMovieAdapter(MovieSubjectActivity.this, movieTitle, movieimg, movieId);
+            activity_md_rv_movie.setAdapter(mLikeAdapter);
+
+            mLikeAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(String id, String url) {
+                    if (id != null && url != null) {
+                        MovieSubjectActivity.toActivity(MovieSubjectActivity.this, id, url);
+                    } else {
+                        SnackBarUtils.showSnackBar(activitymdcoorl, UIUtils.getString(MovieSubjectActivity.this, R.string.error));
+                    }
+                }
+            });
+
+        } else {
+            activity_md_recommend_movie.setText(UIUtils.getString(MovieSubjectActivity.this, R.string.md_load_error));
         }
     }
+
 
     /**
      * 获取到数据，加载View
@@ -268,12 +352,12 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
         mAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(String id, String url) {
-                Log.d(TAG, "hf_MovieSubjectActivity_onItemClick  is  :" );
+                Log.d(TAG, "hf_MovieSubjectActivity_onItemClick  is  :");
 
             }
         });
         activity_md_recommend_movie.setText(UIUtils.getString(MovieSubjectActivity.this, R.string.md_load_ing));
-
+        likeMovie();
 
     }
 }

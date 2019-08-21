@@ -21,5 +21,6 @@
     <string name="md_load_likemovie">喜欢这部电影的人也喜欢...</string>
     <string name="md_load_error">加载失败...</string>
     <string name="md_load_ing">加载中...</string>
-
+    <!--Error-->
+    <string name="error">加载出错</string>
 </resources>

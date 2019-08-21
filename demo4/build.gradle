@@ -73,5 +73,7 @@ dependencies {
     testImplementation rootProject.ext.dependencies["canary-release"]
     testImplementation rootProject.ext.dependencies["junit"]
     implementation files('libs\\jsoup-1.10.1.jar')
+    implementation 'com.android.support:palette-v7:24.0.0'
+
 
 }
