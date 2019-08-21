@@ -11,8 +11,7 @@ import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 
-import com.ryg.chapter_2.demo4.app.utils.GetVPImage;
-import com.ryg.chapter_2.demo4.app.utils.ThemeUtils;
+
 import com.ryg.chapter_2.demo4.app.utils.UIUtils;
 import com.ryg.chapter_2.demo4.di.component.DaggerMovieComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieContract;

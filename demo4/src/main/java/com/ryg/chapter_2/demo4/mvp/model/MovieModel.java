@@ -1,8 +1,6 @@
 package com.ryg.chapter_2.demo4.mvp.model;
 
 import android.app.Application;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -13,8 +11,7 @@ import com.jess.arms.di.scope.ActivityScope;
 
 import javax.inject.Inject;
 
-import com.ryg.chapter_2.demo4.R;
-import com.ryg.chapter_2.demo4.app.utils.GetVPImage;
+import com.ryg.chapter_2.demo4.app.utils.jsoupUtils.GetVPImage;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieContract;
 import com.ryg.chapter_2.demo4.mvp.model.api.cache.FilmLiveCache;
 import com.ryg.chapter_2.demo4.mvp.model.api.service.FilmLiveService;
@@ -24,10 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.rx_cache2.DynamicKey;
 import io.rx_cache2.EvictDynamicKey;
-
-import static com.jess.arms.utils.PermissionUtil.TAG;
 
 
 /**
@@ -77,28 +75,42 @@ public class MovieModel extends BaseModel implements MovieContract.Model {
     }
 
 
-
     @Override
-    public List<String> getBaner() {
+    public Observable<String> getBaner() {
         Log.d(TAG, "hf_MovieModel_getBaner  is  running:" + mList.size());
-        startTime = System.currentTimeMillis();
-        new Thread(new Runnable() {
+//        startTime = System.currentTimeMillis();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                GetVPImage getVPImage = new GetVPImage();
+//                mList = getVPImage.getImage();
+//
+//            }
+//        }).start();
+//        long stopTime = System.currentTimeMillis();
+//        Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime1:" + startTime+"  stopTime:"+stopTime);
+//
+//        while (mList.size()==0 && (stopTime - startTime) < 5000) {
+//            Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime:" + startTime+"  stopTime:"+stopTime);
+//            stopTime = System.currentTimeMillis();
+//            continue;
+//        }
+//        Log.d(TAG, "hf_MovieModel_getBaner  is  running mList:" + mList);
+
+
+        Observable observable = Observable.create(new ObservableOnSubscribe<String>() {
             @Override
-            public void run() {
+            public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 GetVPImage getVPImage = new GetVPImage();
                 mList = getVPImage.getImage();
-
+                for(String ss:mList){
+                    emitter.onNext(ss);
+                }
+                emitter.onComplete();
             }
-        }).start();
-        long stopTime = System.currentTimeMillis();
-        Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime1:" + startTime+"  stopTime:"+stopTime);
+        });
 
-        while (mList.size()==0 && (stopTime - startTime) < 5000) {
-            Log.d(TAG, "hf_MovieModel_getBaner  is  running startTime:" + startTime+"  stopTime:"+stopTime);
-            stopTime = System.currentTimeMillis();
-            continue;
-        }
-        Log.d(TAG, "hf_MovieModel_getBaner  is  running mList:" + mList);
-        return mList;
+
+        return observable;
     }
 }

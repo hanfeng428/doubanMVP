@@ -11,12 +11,18 @@ import com.jess.arms.di.scope.ActivityScope;
 
 import javax.inject.Inject;
 
+import com.ryg.chapter_2.demo4.app.utils.jsoupUtils.GetLikeMovie;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieSubjectContract;
 import com.ryg.chapter_2.demo4.mvp.model.api.cache.MovieSubjectCache;
 import com.ryg.chapter_2.demo4.mvp.model.api.service.MovieSubjectService;
 import com.ryg.chapter_2.demo4.mvp.model.entity.MovieDetailsBean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.rx_cache2.DynamicKey;
 import io.rx_cache2.EvictDynamicKey;
 
@@ -40,6 +46,10 @@ public class MovieSubjectModel extends BaseModel implements MovieSubjectContract
     Gson mGson;
     @Inject
     Application mApplication;
+    List<String>idList=new ArrayList<>();
+    List<String>titleList=new ArrayList<>();
+    List<String>imgList=new ArrayList<>();
+
 
     @Inject
     public MovieSubjectModel(IRepositoryManager repositoryManager) {
@@ -63,5 +73,50 @@ public class MovieSubjectModel extends BaseModel implements MovieSubjectContract
                 .getCache(observable
                         , new DynamicKey(lastIdQueried)
                         , new EvictDynamicKey(update));
+    }
+
+    @Override
+    public Observable<List<String>> getLikeMovieID() {
+        Observable observable = Observable.create(new ObservableOnSubscribe<List<String>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
+                GetLikeMovie movie = new GetLikeMovie("25924056");
+                idList=movie.getmovieId();
+                emitter.onNext(idList);
+                emitter.onComplete();
+
+            }
+        });
+        return observable;
+    }
+
+    @Override
+    public Observable<List<String>> getLikeMovieTitle() {
+        Observable observable = Observable.create(new ObservableOnSubscribe<List<String>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
+                GetLikeMovie movie = new GetLikeMovie("25924056");
+                titleList=movie.getMovieTitle();
+                emitter.onNext(titleList);
+                emitter.onComplete();
+
+            }
+        });
+        return observable;
+    }
+
+    @Override
+    public Observable<List<String>> getLikeMovieimg() {
+        Observable observable = Observable.create(new ObservableOnSubscribe<List<String>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
+                GetLikeMovie movie = new GetLikeMovie("25924056");
+                imgList=movie.getmovieimg();
+                emitter.onNext(imgList);
+                emitter.onComplete();
+
+            }
+        });
+        return observable;
     }
 }

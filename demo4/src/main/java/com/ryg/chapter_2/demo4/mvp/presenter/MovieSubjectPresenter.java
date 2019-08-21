@@ -20,6 +20,8 @@ import com.jess.arms.utils.RxLifecycleUtils;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieSubjectContract;
 import com.ryg.chapter_2.demo4.mvp.model.entity.MovieDetailsBean;
 
+import java.util.List;
+
 
 /**
  * ================================================
@@ -78,6 +80,88 @@ public class MovieSubjectPresenter extends BasePresenter<MovieSubjectContract.Mo
                     }
                 });
     }
+
+    public void getLikeMovieID(){
+        mModel.getLikeMovieID()
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+                .doOnSubscribe(disposable -> {
+
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+
+                })
+                .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
+                .subscribe(new ErrorHandleSubscriber<List<String>>(mErrorHandler) {
+                    @Override
+                    public void onNext(List<String> movies) {
+                        Log.d(TAG, "hf_MovieSubjectPresenter_onNext1 is  :"+movies);
+                        mRootView.setLikeMoiveId(movies);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(TAG, "hf_MovieSubjectPresenter_onError1  is  :"+t);
+                        super.onError(t);
+                    }
+                });
+    }
+
+    public void getLikeMovieTitle(){
+        mModel.getLikeMovieTitle()
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+                .doOnSubscribe(disposable -> {
+
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+
+                })
+                .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
+                .subscribe(new ErrorHandleSubscriber<List<String>>(mErrorHandler) {
+                    @Override
+                    public void onNext(List<String> movies) {
+                        Log.d(TAG, "hf_MovieSubjectPresenter_onNext2 is  :"+movies);
+                        mRootView.setLikeMoiveTitle(movies);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(TAG, "hf_MovieSubjectPresenter_onError2  is  :"+t);
+                        super.onError(t);
+                    }
+                });
+    }
+
+    public void getLikeMovieImg(){
+        mModel.getLikeMovieimg()
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
+                .doOnSubscribe(disposable -> {
+
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doFinally(() -> {
+
+                })
+                .compose(RxLifecycleUtils.bindToLifecycle(mRootView))//使用 Rxlifecycle,使 Disposable 和 Activity 一起销毁
+                .subscribe(new ErrorHandleSubscriber<List<String>>(mErrorHandler) {
+                    @Override
+                    public void onNext(List<String> movies) {
+                        Log.d(TAG, "hf_MovieSubjectPresenter_onNext3 is  :"+movies);
+                        mRootView.setLikeMoiveImg(movies);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d(TAG, "hf_MovieSubjectPresenter_onError3  is  :"+t);
+                        super.onError(t);
+                    }
+                });
+    }
+
 
     @Override
     public void onDestroy() {

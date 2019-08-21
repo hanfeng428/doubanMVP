@@ -1,4 +1,4 @@
-package com.ryg.chapter_2.demo4.app.utils;
+package com.ryg.chapter_2.demo4.app.utils.jsoupUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

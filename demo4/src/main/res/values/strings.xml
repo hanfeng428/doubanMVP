@@ -7,4 +7,19 @@
     <string name="nav_menu_system">系统</string>
     <string name="nav_menu_ChangeSection">更改标签</string>
     <string name="nav_menu_Settings">设置</string>
+    <!--MovieDetails-->
+    <string name="md_more">更多</string>
+    <string name="md_put">收起</string>
+    <string name="md_movie_type">电影类型：</string>
+    <string name="md_movie_country">上映国家：</string>
+    <string name="md_movie_year">上映时间：</string>
+    <string name="md_movie_original">原名：</string>
+    <string name="md_movie_brief">简介</string>
+    <string name="md_movie_actor">影人</string>
+    <string name="md_movie_evaluation">人评价</string>
+    <string name="actor_title">影人</string>
+    <string name="md_load_likemovie">喜欢这部电影的人也喜欢...</string>
+    <string name="md_load_error">加载失败...</string>
+    <string name="md_load_ing">加载中...</string>
+
 </resources>

@@ -6,12 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,13 +21,19 @@ import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 
+import com.ryg.chapter_2.demo4.app.utils.StringUtils;
+import com.ryg.chapter_2.demo4.app.utils.UIUtils;
 import com.ryg.chapter_2.demo4.di.component.DaggerMovieSubjectComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieSubjectContract;
 import com.ryg.chapter_2.demo4.mvp.model.entity.MovieDetailsBean;
 import com.ryg.chapter_2.demo4.mvp.presenter.MovieSubjectPresenter;
 
 import com.ryg.chapter_2.demo4.R;
+import com.ryg.chapter_2.demo4.mvp.ui.adapter.ActorAdapter;
+import com.ryg.chapter_2.demo4.mvp.ui.adapter.BaseRecyclerAdapter;
 
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -109,6 +110,8 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     RecyclerView activity_md_rv_movie;
     @BindView(R.id.activity_md_include)
     View activity_md_include;
+    private MovieDetailsBean mSubject;
+    private ActorAdapter mAdapter;
 
 
     public static void toActivity(Activity activity, String id, String imageUrl) {
@@ -145,6 +148,9 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
             imageURL = getIntent().getStringExtra(KEY_IMAGE_URL);
         }
         mPresenter.getData("25924056");
+        mPresenter.getLikeMovieID();
+        mPresenter.getLikeMovieTitle();
+        mPresenter.getLikeMovieImg();
         activitymdrefresh.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         activitymdrefresh.setProgressViewOffset(false, 0, 48);
         activitymdtoolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -184,5 +190,90 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     @Override
     public void setDataList(MovieDetailsBean dataList) {
         Log.d(TAG, "hf_MovieSubjectActivity_setDataList  dataList.getTitle() is  :" + dataList.getTitle());
+        mSubject=dataList;
+    }
+
+    @Override
+    public void setLikeMoiveId(List<String> list) {
+        for(String ss:list){
+            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveId  ss is  :" +ss);
+
+        }
+    }
+
+    @Override
+    public void setLikeMoiveTitle(List<String> list) {
+        for(String ss:list){
+            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveTitle  ss is  :" +ss);
+
+        }
+    }
+
+    @Override
+    public void setLikeMoiveImg(List<String> list) {
+        for(String ss:list){
+            Log.d(TAG, "hf_MovieSubjectActivity_setLikeMoiveImg  ss is  :" +ss);
+
+        }
+    }
+
+    /**
+     * 获取到数据，加载View
+     */
+    private void updateView() {
+        activitymdll.setVisibility(View.VISIBLE);
+
+        if (mSubject.getRating() != null) {
+            float rate = (float) (mSubject.getRating().getAverage() / 2);
+            activity_md_ratingbar.setRating(rate);
+            activity_md_ratingnumber.setText(rate * 2 + "");
+            activity_md_ratings_count.setText(mSubject.getRatings_count() + "人评价");
+        }
+
+        activity_md_subject_title.setText(mSubject.getTitle());
+        if (mSubject.getGenres() != null) {
+            activity_md_subject_genres.setText("");
+            List<String> genres = mSubject.getGenres();
+            activity_md_subject_genres.append(UIUtils.getString(this, R.string.md_movie_type));
+            StringUtils.addViewString(genres, activity_md_subject_genres);
+        }
+        if (mSubject.getCountries() != null) {
+            activity_md_subject_countries.setText("");
+            List<String> countries = mSubject.getCountries();
+            activity_md_subject_countries.append(UIUtils.getString(this, R.string.md_movie_country));
+            StringUtils.addViewString(countries, activity_md_subject_countries);
+
+        }
+        activity_md_subject_year.setText(UIUtils.getString(this, R.string.md_movie_year) + mSubject.getYear());
+        if (mSubject.getAka() != null) {
+            activity_md_subject_aka.setText("");
+            List<String> aka = mSubject.getAka();
+            activity_md_subject_aka.append(UIUtils.getString(this, R.string.md_movie_original));
+            StringUtils.addViewString(aka, activity_md_subject_aka);
+        }
+        if (mSubject.getSummary() != null) {
+            activitymdsummarytitle.setText(UIUtils.getString(this, R.string.md_movie_brief));
+            activitymdsummary.setText(mSubject.getSummary());
+            activitymdsummartmore.setText(UIUtils.getString(this, R.string.md_more));
+        }
+
+        activitymdactortitle.setText(UIUtils.getString(this, R.string.md_movie_actor));
+
+        activitymdrvactor.setVisibility(View.VISIBLE);
+        activitymdrvactor.setLayoutManager(new LinearLayoutManager(MovieSubjectActivity.this,
+                LinearLayoutManager.HORIZONTAL, false));
+        mAdapter = new ActorAdapter(this, mSubject);
+        activitymdrvactor.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(String id, String url) {
+                Log.d(TAG, "hf_MovieSubjectActivity_onItemClick  is  :" );
+
+            }
+        });
+        activity_md_recommend_movie.setText(UIUtils.getString(MovieSubjectActivity.this, R.string.md_load_ing));
+
+
     }
 }
