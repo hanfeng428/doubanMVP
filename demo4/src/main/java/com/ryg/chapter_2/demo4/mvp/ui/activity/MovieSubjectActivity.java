@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +66,7 @@ import static com.jess.arms.utils.Preconditions.checkNotNull;
  * <a href="https://github.com/JessYanCoding/MVPArmsTemplate">模版请保持更新</a>
  * ================================================
  */
-public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> implements MovieSubjectContract.View {
+public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> implements MovieSubjectContract.View, AppBarLayout.OnOffsetChangedListener {
     private static final String KEY_MOVIE_ID = "movie_id";
     private static final String KEY_IMAGE_URL = "image_url";
     String movieID;
@@ -161,6 +163,7 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
             movieID = getIntent().getStringExtra(KEY_MOVIE_ID);
             imageURL = getIntent().getStringExtra(KEY_IMAGE_URL);
         }
+        initListener();
         imageURL="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2549234765.webp";
         mPresenter.getData("25924056");
         mPresenter.getLikeMovieID();
@@ -174,6 +177,41 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
         Menu menu = activitymdtoolbar.getMenu();
         updateMovieImg();
         menu.getItem(0).setIcon(R.drawable.collection_true);
+    }
+
+    private void initListener(){
+        activitymdrefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //todo   刷新未做处理
+                activitymdrefresh.setRefreshing(true);
+
+                activitymdrefresh.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (activitymdrefresh != null) {
+                            activitymdrefresh.setRefreshing(false);
+                        }
+                    }
+                }, 2000);
+            }
+        });
+        activitymdfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mSubject != null) {
+                    WebViewActivity webactivity = new WebViewActivity();
+                    webactivity.toWebActivity(MovieSubjectActivity.this, mSubject.getAlt(), mSubject.getTitle());
+                }
+            }
+        });
+        activitymdappbar.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        //当Appbar完全显示时才启用SwipeRefreshLayout
+        activitymdrefresh.setEnabled(verticalOffset == 0);
     }
 
     private void updateMovieImg() {
