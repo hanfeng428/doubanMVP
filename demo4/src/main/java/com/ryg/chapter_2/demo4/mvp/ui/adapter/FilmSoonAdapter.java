@@ -1,9 +1,11 @@
 package com.ryg.chapter_2.demo4.mvp.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +19,13 @@ import com.ryg.chapter_2.demo4.R;
 import com.ryg.chapter_2.demo4.app.utils.DisplayImgUtis;
 import com.ryg.chapter_2.demo4.app.utils.ScreenUtils;
 import com.ryg.chapter_2.demo4.mvp.model.entity.ComingBean;
+import com.ryg.chapter_2.demo4.mvp.ui.activity.MovieSubjectActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FilmSoonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
-
+    private static final String TAG = "FilmSoonAdapter";
     private Context context;
     private ComingBean root;
     private int status = 1;
@@ -152,7 +155,9 @@ public class FilmSoonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             llItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context,"点击了item",Toast.LENGTH_SHORT);
+                    Log.d(TAG,"hf_FilmSoonAdapter_bindItem ");
+                    MovieSubjectActivity.toActivity((Activity) context,subjects.getId(),subjects.getImages().getLarge());
+
                 }
             });
         }

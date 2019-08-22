@@ -13,6 +13,7 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -74,6 +75,7 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     private List<String> movieTitle;
     private List<String> movieId;
     private List<String> movieimg;
+    boolean isOpenSummary = false;
 
     @BindView(R.id.activity_md_iv)
     android.widget.ImageView activitymdiv;
@@ -159,16 +161,18 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            movieID = getIntent().getStringExtra(KEY_MOVIE_ID);
-            imageURL = getIntent().getStringExtra(KEY_IMAGE_URL);
-        }
+
+        movieID = getIntent().getStringExtra(KEY_MOVIE_ID);
+        imageURL = getIntent().getStringExtra(KEY_IMAGE_URL);
+
+        Log.d(TAG, "hf_MovieSubjectActivity_initData  movieID:" + movieID + "  imageURL:" + imageURL);
+
         initListener();
-        imageURL="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2549234765.webp";
-        mPresenter.getData("25924056");
-        mPresenter.getLikeMovieID();
-        mPresenter.getLikeMovieTitle();
-        mPresenter.getLikeMovieImg();
+//        imageURL="https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2549234765.webp";
+        mPresenter.getData(movieID);
+        mPresenter.getLikeMovieID(movieID);
+        mPresenter.getLikeMovieTitle(movieID);
+        mPresenter.getLikeMovieImg(movieID);
         activitymdrefresh.setColorSchemeResources(R.color.colorPrimary, R.color.colorAccent, R.color.colorPrimaryDark);
         activitymdrefresh.setProgressViewOffset(false, 0, 48);
         activitymdtoolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
@@ -179,7 +183,7 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
         menu.getItem(0).setIcon(R.drawable.collection_true);
     }
 
-    private void initListener(){
+    private void initListener() {
         activitymdrefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -206,6 +210,31 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
             }
         });
         activitymdappbar.addOnOffsetChangedListener(this);
+        activitymdsummartmore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (isOpenSummary) {
+                    activitymdsummary.setLines(5);
+                    activitymdsummary.setEllipsize(TextUtils.TruncateAt.END);
+                    activitymdsummartmore.setText(UIUtils.getString(MovieSubjectActivity.this, R.string.md_more));
+                    isOpenSummary = false;
+                } else {
+                    activitymdsummary.setSingleLine(false);
+                    activitymdsummary.setEllipsize(null);
+                    activitymdsummartmore.setText(UIUtils.getString(MovieSubjectActivity.this, R.string.md_put));
+                    isOpenSummary = true;
+                }
+
+            }
+        });
+
+        activitymdtoolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
     @Override

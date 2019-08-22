@@ -76,11 +76,11 @@ public class MovieSubjectModel extends BaseModel implements MovieSubjectContract
     }
 
     @Override
-    public Observable<List<String>> getLikeMovieID() {
+    public Observable<List<String>> getLikeMovieID(String id) {
         Observable observable = Observable.create(new ObservableOnSubscribe<List<String>>() {
             @Override
             public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
-                GetLikeMovie movie = new GetLikeMovie("25924056");
+                GetLikeMovie movie = new GetLikeMovie(id);
                 idList=movie.getmovieId();
                 emitter.onNext(idList);
                 emitter.onComplete();
@@ -91,11 +91,11 @@ public class MovieSubjectModel extends BaseModel implements MovieSubjectContract
     }
 
     @Override
-    public Observable<List<String>> getLikeMovieTitle() {
+    public Observable<List<String>> getLikeMovieTitle(String id) {
         Observable observable = Observable.create(new ObservableOnSubscribe<List<String>>() {
             @Override
             public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
-                GetLikeMovie movie = new GetLikeMovie("25924056");
+                GetLikeMovie movie = new GetLikeMovie(id);
                 titleList=movie.getMovieTitle();
                 emitter.onNext(titleList);
                 emitter.onComplete();
@@ -106,11 +106,11 @@ public class MovieSubjectModel extends BaseModel implements MovieSubjectContract
     }
 
     @Override
-    public Observable<List<String>> getLikeMovieimg() {
+    public Observable<List<String>> getLikeMovieimg(String id) {
         Observable observable = Observable.create(new ObservableOnSubscribe<List<String>>() {
             @Override
             public void subscribe(ObservableEmitter<List<String>> emitter) throws Exception {
-                GetLikeMovie movie = new GetLikeMovie("25924056");
+                GetLikeMovie movie = new GetLikeMovie(id);
                 imgList=movie.getmovieimg();
                 emitter.onNext(imgList);
                 emitter.onComplete();

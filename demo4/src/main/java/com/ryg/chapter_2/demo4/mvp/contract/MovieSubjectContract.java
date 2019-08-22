@@ -33,9 +33,9 @@ public interface MovieSubjectContract {
     //Model层定义接口,外部只需关心Model返回的数据,无需关心内部细节,即是否使用缓存
     interface Model extends IModel {
         Observable<MovieDetailsBean> getMovie(int lastIdQueried, boolean update,String id);
-        Observable<List<String>> getLikeMovieID();
-        Observable<List<String>> getLikeMovieTitle();
-        Observable<List<String>> getLikeMovieimg();
+        Observable<List<String>> getLikeMovieID(String id);
+        Observable<List<String>> getLikeMovieTitle(String id);
+        Observable<List<String>> getLikeMovieimg(String id);
 
 
     }

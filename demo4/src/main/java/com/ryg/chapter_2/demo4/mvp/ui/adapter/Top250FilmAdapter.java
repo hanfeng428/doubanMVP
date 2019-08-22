@@ -1,9 +1,11 @@
 package com.ryg.chapter_2.demo4.mvp.ui.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,10 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.util.LogTime;
 import com.ryg.chapter_2.demo4.R;
 import com.ryg.chapter_2.demo4.app.utils.DisplayImgUtis;
 import com.ryg.chapter_2.demo4.app.utils.ScreenUtils;
 import com.ryg.chapter_2.demo4.mvp.model.entity.Top250Bean;
+import com.ryg.chapter_2.demo4.mvp.ui.activity.MovieActivity;
+import com.ryg.chapter_2.demo4.mvp.ui.activity.MovieSubjectActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by forezp on 16/9/25.
  */
 public class Top250FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
+    private static final String TAG = "Top250FilmAdapter";
     private Context context;
     private Top250Bean root;
     private int status = 1;
@@ -154,7 +159,8 @@ public class Top250FilmAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             llItemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context,"点击了item",Toast.LENGTH_SHORT);
+                    Log.d(TAG,"hf_Top250FilmAdapter_bindItem positon"+positon);
+                    MovieSubjectActivity.toActivity((Activity) context,subjects.getId(),subjects.getImages().getLarge());
                 }
             });
 

@@ -81,8 +81,8 @@ public class MovieSubjectPresenter extends BasePresenter<MovieSubjectContract.Mo
                 });
     }
 
-    public void getLikeMovieID(){
-        mModel.getLikeMovieID()
+    public void getLikeMovieID(String id){
+        mModel.getLikeMovieID(id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
                 .doOnSubscribe(disposable -> {
@@ -108,8 +108,8 @@ public class MovieSubjectPresenter extends BasePresenter<MovieSubjectContract.Mo
                 });
     }
 
-    public void getLikeMovieTitle(){
-        mModel.getLikeMovieTitle()
+    public void getLikeMovieTitle(String id){
+        mModel.getLikeMovieTitle(id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
                 .doOnSubscribe(disposable -> {
@@ -135,8 +135,8 @@ public class MovieSubjectPresenter extends BasePresenter<MovieSubjectContract.Mo
                 });
     }
 
-    public void getLikeMovieImg(){
-        mModel.getLikeMovieimg()
+    public void getLikeMovieImg(String id){
+        mModel.getLikeMovieimg(id)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))//遇到错误时重试,第一个参数为重试几次,第二个参数为重试的间隔
                 .doOnSubscribe(disposable -> {

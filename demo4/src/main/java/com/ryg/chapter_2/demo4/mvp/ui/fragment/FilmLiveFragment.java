@@ -1,5 +1,6 @@
 package com.ryg.chapter_2.demo4.mvp.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import com.ryg.chapter_2.demo4.di.component.DaggerMovieComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.MovieContract;
 import com.ryg.chapter_2.demo4.mvp.model.entity.FilmLiveBean;
 import com.ryg.chapter_2.demo4.mvp.presenter.MoviePresenter;
+import com.ryg.chapter_2.demo4.mvp.ui.activity.MovieSubjectActivity;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.EasyRecyclerViewAdapter;
 import com.ryg.chapter_2.demo4.mvp.ui.adapter.FilmLiveAdapter;
 import com.ryg.chapter_2.demo4.mvp.widget.SpacesItemDecoration;
@@ -122,7 +124,9 @@ public class FilmLiveFragment extends LazyFragment<MoviePresenter> implements Mo
         adapter.setOnItemClickListener(new EasyRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(View view, int position, Object data) {
-                Toast.makeText(getActivity(),"item is clicked",Toast.LENGTH_SHORT);
+                Log.e("zrg", "hf_FilmLiveFragment_OnItemClick");
+                MovieSubjectActivity.toActivity(getActivity(),dataList.getSubjects().get(position).getId(),dataList.getSubjects().get(position).getImages().getLarge());
+
             }
         });
 
