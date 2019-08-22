@@ -1,5 +1,6 @@
 package com.ryg.chapter_2.demo4.mvp.ui.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -156,12 +160,15 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
 
     @Override
     public int initView(@Nullable Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         return R.layout.activity_movie_subject; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
     }
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(makeTransition());
+        }
         movieID = getIntent().getStringExtra(KEY_MOVIE_ID);
         imageURL = getIntent().getStringExtra(KEY_IMAGE_URL);
 
@@ -181,6 +188,15 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
         Menu menu = activitymdtoolbar.getMenu();
         updateMovieImg();
         menu.getItem(0).setIcon(R.drawable.collection_true);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private android.transition.Transition makeTransition() {
+        TransitionSet transition = new TransitionSet();
+        transition.addTransition(new Explode());
+        transition.addTransition(new Fade());
+        transition.setDuration(400);
+        return transition;
     }
 
     private void initListener() {

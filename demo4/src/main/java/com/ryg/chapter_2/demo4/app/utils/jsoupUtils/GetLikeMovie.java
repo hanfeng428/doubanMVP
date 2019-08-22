@@ -38,6 +38,9 @@ public class GetLikeMovie {
     public List<String> getmovieId() {
         List<String> list = new ArrayList<>();
         // 获取id
+        if(doc==null){
+            return new ArrayList<>();
+        }
         Elements select = doc.select("[class=recommendations-bd] dd");
         Elements link = select.select("a");
         for (int i = 0; i < link.size(); i++) {
@@ -58,6 +61,9 @@ public class GetLikeMovie {
      */
     public List<String> getmovieimg() {
         List<String> list = new ArrayList<>();
+        if(doc==null){
+            return new ArrayList<>();
+        }
         Pattern pattern = Pattern
                 .compile("[http|https]+[://]+[0-9A-Za-z:/[-]_#[?][=][.][&]]*");
         Elements select = doc.select("[class=recommendations-bd]");
@@ -80,6 +86,9 @@ public class GetLikeMovie {
      */
     public List<String> getMovieTitle() {
         List<String> list = new ArrayList<>();
+        if(doc==null){
+            return new ArrayList<>();
+        }
         Elements select = doc.select("[class=recommendations-bd]");
         Elements title = select.select("dd a[href]");
         for (int i = 0; i < title.size(); i++) {
