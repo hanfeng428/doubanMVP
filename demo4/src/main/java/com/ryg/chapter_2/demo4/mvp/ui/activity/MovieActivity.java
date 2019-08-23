@@ -102,7 +102,6 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
     }
 
 
-
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
         mPresenter.getBaner();
@@ -230,8 +229,8 @@ public class MovieActivity extends BaseActivity<MoviePresenter> implements Movie
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.toolbar_menu_search:
-                Log.d(TAG, "hf_MovieActivity_onMenuItemClick  search:");
-
+                Intent intent = new Intent(MovieActivity.this, SearchActivity.class);
+                startActivity(intent);
                 break;
         }
         return false;

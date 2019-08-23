@@ -21,6 +21,7 @@ import android.transition.TransitionSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -160,6 +161,10 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
 
     @Override
     public int initView(@Nullable Bundle savedInstanceState) {
+        //设置允许通过ActivityOptions.makeSceneTransitionAnimation发送或者接收Bundle
+//        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        //设置使用TransitionManager进行动画，不设置的话系统会使用一个默认的TransitionManager
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setTheme(R.style.AppTheme);
         return R.layout.activity_movie_subject; //如果你不需要框架帮你设置 setContentView(id) 需要自行设置,请返回 0
     }

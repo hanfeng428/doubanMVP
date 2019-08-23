@@ -17,8 +17,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".mvp.ui.activity.MovieSubjectActivity"></activity>
-        <activity android:name=".mvp.ui.activity.WebViewActivity"></activity>
+        <activity android:name=".mvp.ui.activity.SearchActivity"></activity>
+        <activity android:name=".mvp.ui.activity.MovieSubjectActivity" />
+        <activity android:name=".mvp.ui.activity.WebViewActivity" />
         <activity android:name=".mvp.ui.activity.ComingSoonActivity" />
         <activity android:name=".mvp.ui.activity.Top250ActivityActivity" />
         <activity android:name=".mvp.ui.activity.MovieShowActivity1Activity" />

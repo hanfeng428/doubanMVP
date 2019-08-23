@@ -23,4 +23,7 @@
     <string name="md_load_ing">加载中...</string>
     <!--Error-->
     <string name="error">加载出错</string>
+    <!--voice serch-->
+    <string name="queryHint">支持 <font color="#D9ffffff">语音/键盘</font> 搜索</string>
+
 </resources>
