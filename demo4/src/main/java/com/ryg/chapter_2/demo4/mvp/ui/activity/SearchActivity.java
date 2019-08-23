@@ -38,6 +38,7 @@ import com.jess.arms.utils.ArmsUtils;
 
 import com.ryg.chapter_2.demo4.di.component.DaggerSearchComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.SearchContract;
+import com.ryg.chapter_2.demo4.mvp.model.entity.BookSearchBean;
 import com.ryg.chapter_2.demo4.mvp.model.entity.KeDaBean;
 import com.ryg.chapter_2.demo4.mvp.presenter.SearchPresenter;
 
@@ -102,7 +103,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
         initListener();
     }
 
-    public void startVoice(){
+    public void startVoice() {
 
     }
 
@@ -143,8 +144,8 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
                         }.getType());
                 String result = "";
                 for (int i = 0; i < resultList.size() - 1; i++) {
-                    for(int k=0;k<resultList.get(i).getWs().size();k++){
-                        for (int j=0;j<resultList.get(i).getWs().get(k).getCw().size();j++){
+                    for (int k = 0; k < resultList.get(i).getWs().size(); k++) {
+                        for (int j = 0; j < resultList.get(i).getWs().get(k).getCw().size(); j++) {
                             result += resultList.get(i).getWs().get(k).getCw().get(j).getW();
 
                         }
@@ -154,9 +155,10 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
 
             }
         }
+
         @Override
         public void onError(SpeechError arg0) {
-            Toast.makeText(SearchActivity.this,"识别错误：" + arg0,Toast.LENGTH_LONG).show();
+            Toast.makeText(SearchActivity.this, "识别错误：" + arg0, Toast.LENGTH_LONG).show();
 
         }
     };
@@ -187,7 +189,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "hf_SearchActivity_initListener  textSearch");
-
+                mPresenter.getBook("0","西游记",true);
             }
         });
     }
@@ -252,6 +254,13 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
                 Log.d(TAG, "hf_SearchActivity_onActivityResult  ss:" + ss);
 
             }
+        }
+    }
+
+    @Override
+    public void setBookDataList(BookSearchBean dataList, boolean ismore) {
+        for (int i = 0; i < dataList.getBooks().size(); i++) {
+            Log.d(TAG, "hf_SearchActivity_setBookDataList  getTitle:" + dataList.getBooks().get(i).getTitle());
         }
     }
 }
