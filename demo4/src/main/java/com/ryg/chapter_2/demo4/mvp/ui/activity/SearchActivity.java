@@ -20,16 +20,32 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.util.LogTime;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.RecognizerListener;
+import com.iflytek.cloud.RecognizerResult;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechRecognizer;
+import com.iflytek.cloud.SpeechUtility;
+import com.iflytek.cloud.ui.RecognizerDialog;
+import com.iflytek.cloud.ui.RecognizerDialogListener;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
 import com.jess.arms.utils.ArmsUtils;
 
 import com.ryg.chapter_2.demo4.di.component.DaggerSearchComponent;
 import com.ryg.chapter_2.demo4.mvp.contract.SearchContract;
+import com.ryg.chapter_2.demo4.mvp.model.entity.KeDaBean;
 import com.ryg.chapter_2.demo4.mvp.presenter.SearchPresenter;
 
 import com.ryg.chapter_2.demo4.R;
 
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,22 +98,96 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "hf_SearchActivity_initData  isApkInstalled:" + isApkInstalled(RecognizerIntent.ACTION_RECOGNIZE_SPEECH));
-
+        SpeechUtility.createUtility(this, SpeechConstant.APPID + "=5d5f840d");
         initListener();
     }
+
+    public void startVoice(){
+
+    }
+
+
+    /**
+     * 交互动画
+     */
+    public void listenUI() {
+        RecognizerDialog iatDialog = new RecognizerDialog(this, mInitListener);
+
+        // 2.设置听写参数，详见《科大讯飞MSC API手册(Android)》SpeechConstant类
+        iatDialog.setParameter(SpeechConstant.DOMAIN, "iat");
+        iatDialog.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
+        iatDialog.setParameter(SpeechConstant.ACCENT, "mandarin");
+
+        iatDialog.setListener(recognizerDialogListener);
+
+        iatDialog.show();
+    }
+
+    private RecognizerDialogListener recognizerDialogListener = new RecognizerDialogListener() {
+        String resultJson = "[";
+
+        @Override
+        public void onResult(RecognizerResult results, boolean isLast) {
+            Log.d(TAG, "hf_SearchActivity_onResult  results:" + results.getResultString());
+            if (!isLast) {
+                resultJson += results.getResultString() + ",";
+            } else {
+                resultJson += results.getResultString() + "]";
+            }
+
+            if (isLast) {
+                //解析语音识别后返回的json格式的结果
+                Gson gson = new Gson();
+                List<KeDaBean> resultList = gson.fromJson(resultJson,
+                        new TypeToken<List<KeDaBean>>() {
+                        }.getType());
+                String result = "";
+                for (int i = 0; i < resultList.size() - 1; i++) {
+                    for(int k=0;k<resultList.get(i).getWs().size();k++){
+                        for (int j=0;j<resultList.get(i).getWs().get(k).getCw().size();j++){
+                            result += resultList.get(i).getWs().get(k).getCw().get(j).getW();
+
+                        }
+                    }
+                }
+                Log.d(TAG, "hf_SearchActivity_onResult  result:" + result);
+
+            }
+        }
+        @Override
+        public void onError(SpeechError arg0) {
+            Toast.makeText(SearchActivity.this,"识别错误：" + arg0,Toast.LENGTH_LONG).show();
+
+        }
+    };
+
+
+    private InitListener mInitListener = new InitListener() {
+
+        @Override
+        public void onInit(int arg0) {
+            if (arg0 != ErrorCode.SUCCESS) {
+                Toast.makeText(SearchActivity.this, "初始化失败，错误码：" + arg0, Toast.LENGTH_LONG).show();
+            }
+        }
+    };
+
 
     private void initListener() {
         voiceSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "hf_SearchActivity_initListener  voiceSearch");
-                VoiceSearch();
+//                VoiceSearch();
+                listenUI();
+
             }
         });
         textSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "hf_SearchActivity_initListener  textSearch");
+
             }
         });
     }

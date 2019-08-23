@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
-    
+
     useLibrary 'org.apache.http.legacy'
 
     compileOptions {
@@ -42,6 +42,12 @@ android {
         disable "ResourceType"
         abortOnError false
     }
+    sourceSets {//目录指向配置
+        main {
+            jniLibs.srcDir 'libs'
+            jni.srcDirs = []
+        }
+    }
 }
 
 dependencies {
@@ -55,7 +61,7 @@ dependencies {
     annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {
         exclude module: 'support-annotations'
     }
-    
+
     //tools
     annotationProcessor rootProject.ext.dependencies["dagger2-compiler"]
 
@@ -74,6 +80,7 @@ dependencies {
     testImplementation rootProject.ext.dependencies["junit"]
     implementation files('libs\\jsoup-1.10.1.jar')
     implementation 'com.android.support:palette-v7:24.0.0'
+    implementation files('libs\\Msc.jar')
 
 
 }
