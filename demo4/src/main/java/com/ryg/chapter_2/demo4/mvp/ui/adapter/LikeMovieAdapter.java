@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jess.arms.utils.ArmsUtils;
 import com.ryg.chapter_2.demo4.R;
+import com.ryg.chapter_2.demo4.app.BitmapConfiglmpl;
 
 import java.util.List;
 
@@ -34,9 +36,14 @@ public class LikeMovieAdapter extends BaseRecyclerAdapter<LikeMovieAdapter.MyHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         ((MyHolder)holder).item_like_title.setText(mTitle.get(position));
-        Glide.with(mContext)
-                .load(mImg.get(position))
-                .into(((MyHolder)holder).item_like_iv);
+        ArmsUtils.obtainAppComponentFromContext(mContext)
+                .imageLoader()
+                .loadImage(mContext, BitmapConfiglmpl
+                        .builder()
+                        .url(mImg.get(position))
+                        .imagerView(((MyHolder)holder).item_like_iv)
+                        .build());
+
         if (mListener != null) {
             ((MyHolder)holder).item_like_iv.setOnClickListener(new View.OnClickListener() {
                 @Override

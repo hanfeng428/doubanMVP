@@ -36,8 +36,10 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.jess.arms.base.BaseActivity;
 import com.jess.arms.di.component.AppComponent;
+import com.jess.arms.http.imageloader.glide.ImageConfigImpl;
 import com.jess.arms.utils.ArmsUtils;
 
+import com.ryg.chapter_2.demo4.app.BitmapConfiglmpl;
 import com.ryg.chapter_2.demo4.app.utils.SnackBarUtils;
 import com.ryg.chapter_2.demo4.app.utils.StringUtils;
 import com.ryg.chapter_2.demo4.app.utils.UIUtils;
@@ -265,37 +267,30 @@ public class MovieSubjectActivity extends BaseActivity<MovieSubjectPresenter> im
     }
 
     private void updateMovieImg() {
-        Glide.with(this)
-                .asBitmap()
-                .load(imageURL)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        int color = getColor(resource);
-                        activitymdcolltl.setContentScrimColor(color);
-                        activitymdcolltl.setBackgroundColor(color);
-                        activitymdiv.setImageBitmap(resource);
-                    }
-                });
-    }
+//        Glide.with(this)
+//                .asBitmap()
+//                .load(imageURL)
+//                .into(new SimpleTarget<Bitmap>() {
+//                    @Override
+//                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+//                        int color = getColor(resource);
+//                        activitymdcolltl.setContentScrimColor(color);
+//                        activitymdcolltl.setBackgroundColor(color);
+//                        activitymdiv.setImageBitmap(resource);
+//                    }
+//                });
 
-    private int getColor(Bitmap bitmap) {
-        if (bitmap != null) {
-            Palette p = Palette.from(bitmap).generate();
-            Palette.Swatch s_dm = p.getDarkMutedSwatch();
-            Palette.Swatch s_dv = p.getDarkVibrantSwatch();
-            if (s_dm != null) {
-                return s_dm.getRgb();
-            } else {
-                if (s_dv != null) {
-                    return s_dv.getRgb();
-                } else {
-                    return UIUtils.getColor(getApplicationContext(), R.color.colorPrimary);
-                }
-            }
-        } else {
-            return UIUtils.getColor(getApplicationContext(), R.color.colorPrimary);
-        }
+
+
+
+        ArmsUtils.obtainAppComponentFromContext(this)
+                .imageLoader()
+                .loadImage(this, BitmapConfiglmpl
+                        .builder()
+                        .url(imageURL)
+                        .imagerView(activitymdiv)
+                        .layout(activitymdcolltl)
+                        .build());
     }
 
 

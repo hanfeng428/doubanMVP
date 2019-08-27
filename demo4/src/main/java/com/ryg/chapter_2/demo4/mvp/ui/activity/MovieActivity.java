@@ -2,8 +2,6 @@ package com.ryg.chapter_2.demo4.mvp.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -23,9 +21,7 @@ import com.ryg.chapter_2.demo4.mvp.ui.adapter.MyViewpagerAdapter;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.ComingSoonFragment;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmLiveFragment;
 import com.ryg.chapter_2.demo4.mvp.ui.fragment.FilmTop250Fragment;
-import com.ryg.chapter_2.demo4.mvp.ui.other.GlideImageLoader;
 import com.youth.banner.Banner;
-import com.youth.banner.listener.OnBannerListener;
 
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -40,7 +36,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
