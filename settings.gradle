@@ -1,1 +1,1 @@
-include ':demo', ':arms', ':arms-autolayout', ':arms-imageloader-glide', ':demo2', ':demo4'
+include ':demo', ':arms', ':arms-autolayout', ':arms-imageloader-glide', ':demo2', ':demo4', ':exoplayer', ':ijkplayer'

@@ -88,5 +88,8 @@
     <color name="color_search_bg">#E5E5E5</color>
     <color name="color_search_text">#838B83</color>
 
+    <!--player color-->
+    <color name="controller_bg_dark">#66000000</color>
+    <color name="controller_bg_light">#00000000</color>
 
 </resources>
